@@ -20,7 +20,7 @@ function scopeLookup(scope, name) {
     }
 }
 
-function evalNode(node, scope=newScope({names: window, prev: undefined})) {
+function evalNode(node, scope=newScope()) {
     switch (node.tagName) {
     case 'LET': {
         if (node.children.length < 2) {
@@ -125,6 +125,25 @@ function evalNode(node, scope=newScope({names: window, prev: undefined})) {
         return parseInt(node.innerText);
     }
 
+    case 'V': {
+        let parts = node.innerText.split('.');
+        let s = scopeLookup(scope, parts[0]);
+        if (s) {
+            let target = s.names[parts[0]];
+            parts = parts.slice(1);
+
+            for (let i = 0; i < parts.length; ++i) {
+                if (target[parts[i]] === undefined) {
+                    throw `Could not find ${node.innerText}`;
+                }
+                target = target[parts[i]];
+            }
+
+            return target;
+        }
+        return undefined;
+    }
+
     case 'EQ': {
         if (node.children.length > 0) {
             const x = evalNode(node.children[0], scope);
@@ -163,34 +182,27 @@ function evalNode(node, scope=newScope({names: window, prev: undefined})) {
     }
 
     case 'CALL': {
-        if (node.children.length == 0){
-            throw '<call> expects at least 1 arguments: <call><v/> ... </call>';
-        }
-        let func = evalNode(node.children[0], scope)
-        let args = Array.from(node.children).slice(1).map((child) => evalNode(child, scope));
+        let args = Array.from(node.children).map((child) => evalNode(child, scope));
+        let parts = node.attributes['target'].value.split('.');
 
-        return func(...args);
-    }
+        let target = window;
+        let s = scopeLookup(scope, parts[0]);
+        if (s) {
+            target = s.names[parts[0]];
+            parts = parts.slice(1);
+        }
 
-    case 'GET': {
-        if (node.children.length < 1){
-            throw '<get> expects at least 1 arguments: <get><v/> ... </get>';
+        for (let i = 0; i < parts.length; ++i) {
+            if (target[parts[i]] === undefined) {
+                throw `Could not find ${node.attributes['target'].value}`;
+            }
+
+            if (i === parts.length - 1) {
+                return target[parts[i]].bind(target)(...args);
+            }
+
+            target = target[parts[i]];
         }
-        let ctx;
-        if (node.children[0].tagName === "V"){
-            let varName = node.children[0].innerHTML.trim();
-            let s = scopeLookup(scope, varName);
-            if (!s) { throw `<get> could not get variable ${varName} because it was not defined in this scope`; }
-            ctx = s.names[varName]
-        } else {
-            ctx = evalNode(node.children[0], scope);
-        }
-        let args = Array.from(node.children).slice(1).map((child) => evalNode(child, scope)).reverse();
-        while (args.length > 0){
-            let arg = args.pop()
-            ctx = typeof ctx[arg] == "function"? ctx[arg].bind(ctx) : ctx[arg];
-        }
-        return ctx;
     }
 
     default:
