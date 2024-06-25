@@ -9,10 +9,10 @@ window {
 player {
     position: fixed;
     border: 1px solid;
-    width: 15px;
-    height: 30px;
-    top: 0px;
-    left: 0px
+    width: 3%;
+    height: 3%;
+    top: 0%;
+    left: 0%
 }
 player data {
     display: none
