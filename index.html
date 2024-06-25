@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>HelloWorld</title>
-  </head>
-  <body>
-    <htmlang style="display: none">
-      <call target="console.log"><s>Привет!</s></call>
-      <call target="console.log"><s>Это HTMLang</s></call>
-    </htmlang>
-    <script src="./HTMLang.js"></script>
-  </body>
+    <head>
+        <title>WebGame</title>
+        <link rel="stylesheet" href="textures.css">
+    </head>
+    <body>
+        
+        <htmlang style="display: none">
+            <call target="console.log"><s>Привет!</s></call>
+            <call target="console.log"><s>Это HTMLang</s></call>
+        </htmlang>
+        <script src="./HTMLang.js"></script>
+        
+        
+        <window>
+            <world>
+            
+            </world>
+        
+        
+        
+            <player>
+                <data>
+                    <position>
+                        <x>0</x>
+                        <y>0</y>
+                    </position>
+                </data>
+            </player>
+            
+        </window>
+        
+        <script src="./game.js"></script>
+        
+        
+        
+        
+    </body>
 </html>
-

@@ -1,0 +1,19 @@
+window {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px
+}
+
+player {
+    position: fixed;
+    border: 1px solid;
+    width: 15px;
+    height: 30px;
+    top: 0px;
+    left: 0px
+}
+player data {
+    display: none
+}
