@@ -117,7 +117,7 @@ function evalNode(node, scope=newScope()) {
         }
     } break;
 
-    case 'STR': {
+    case 'S': {
         return node.innerText;
     }
 
