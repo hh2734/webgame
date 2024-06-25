@@ -1,5 +1,5 @@
 "use strict";
-
+// eeedded
 function newScope(scope) {
     return {
         names: {},
